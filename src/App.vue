@@ -11,6 +11,9 @@
       <router-link to="/Logbook">Logbook</router-link>
     </div>
     <router-view/>
+    <div class='footer'>
+    <a href="https://github.com/carterrm/project-3">GitHub repository link</a>
+  </div>
   </div>
 </template>
 
@@ -48,6 +51,12 @@ h1 {
 h2 {
   font-size:2em;
   color: #808080;
+}
+
+.footer {
+    text-align: center;
+    color: #123356;
+    margin-bottom:30px;
 }
 
 </style>
