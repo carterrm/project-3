@@ -7,8 +7,14 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Reservations",
+    name: "Home",
     component: Home,
+  },
+  {
+    path: "/Aircraft",
+    name: "Reservations",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Aircraft.vue"),
   },
   {
     path: "/logbook",

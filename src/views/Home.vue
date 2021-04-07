@@ -1,23 +1,36 @@
 <template>
   <div class="home">
-    <AircraftList :aircraftList = "aircraft" /> <!--Aircraft inside double quotes is the computed property, after colon is the name of that
-    data inside AircraftList -->
+    <div v-if='"loggedIn"'>
+      <button class=login @click='"login"'>Login</button>
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import AircraftList from "../components/AircraftList.vue";
 
 export default {
   name: "Home",
   computed: {
-    aircraft: function() {
-      return this.$root.$data.aircraft;
+    userID: function() {
+      return 1010;
+    },
+    loggedIn: function() {
+      return false;
     }
   },
-  components: {
-    AircraftList,
-  },
+  methods: {
+    login: function() {
+      return this.userID;
+    }
+  }
 };
 </script>
+
+<style>
+
+.login {
+  margin-bottom: 20px;
+}
+
+</style>

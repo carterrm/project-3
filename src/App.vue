@@ -7,7 +7,8 @@
     </div>
 
     <div id="nav">
-      <router-link to="/">Reservations</router-link> |
+      <router-link to="/">Home</router-link> |
+      <router-link to="/Aircraft">Reservations</router-link> |
       <router-link to="/Logbook">Logbook</router-link>
     </div>
     <router-view/>
