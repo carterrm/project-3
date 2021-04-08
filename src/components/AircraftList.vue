@@ -1,6 +1,5 @@
 <template>
     <div class='wrapper'>
-        <button @click="getReservations()">Test</button>
         <div v-for='plane in aircraftList' :key="plane.id">
             <div class='fleet-plane'>
                 <img :src="'/images/' + plane.id + '.jpg'" class='plane-image'>
@@ -39,7 +38,6 @@ export default{
     
     methods: {
         async incrementHoursReserved(plane) {
-            console.log("incrementHoursBooked called")
             plane.hoursBooked++;
             try {
                 axios.put(`/api/reservations/edit/`, {
@@ -53,7 +51,6 @@ export default{
             }
         },
         async decrementHoursReserved(plane) {
-            console.log("decrementHoursBooked called")
             if(plane.hoursBooked > 0) {
                 plane.hoursBooked--;
                 try {
@@ -72,19 +69,18 @@ export default{
         },
         updateAircraftReservations() {
             let response = this.reservations;
-            console.log("Entering updateAircraftReservations");
             let i = 0;
                 for (i = 0; i < response.length; i++) {
                     let j = 0;
                     for (j = 0; j < this.aircraftList.length; j++) {
-                        console.log(response[i].aircraftID + ", " + this.aircraftList[j].id)
                         if(response[i].aircraftID == this.aircraftList[j].id) {
                             this.aircraftList[j].hoursBooked = response[i].numHours;
                         }
                     }
                 }
-            console.log("exiting updateAircraftReservations");
         },
+
+        //TODO Something in this chain of command is being funky & not updating properly- Mongo's right, the client's one added hour behind. Removing hours seems to work, though
         async getReservations() {
             let response = 0;
             let userID = this.$root.$data.userID
@@ -95,7 +91,6 @@ export default{
                 console.log(error);
             }
             this.updateAircraftReservations();
-            console.log("exiting getReservations")
         },
     
     }

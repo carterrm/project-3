@@ -52,24 +52,19 @@ app.post('/api/reservations/:userID/', async (req, res) => {
 });
 
 app.get('/api/reservations/:userID', async (req, res) => {
-  console.log("Entered Server Get for reservations");
     try {
       let reservations = await reservation.find({userID: req.params.userID});
       res.send(reservations);
-      console.log("Sent reservations to client successfully");
     } catch (error) {
-        console.log("Error in getting reservations for client")
       console.log(error);
       res.sendStatus(500);
     }
   });
 
   app.put('/api/reservations/edit/', async (req, res) => {
-    console.log("Entered reservation edit");
     try {
         let item = await reservation.findOne({userID: req.body.userID, aircraftID: req.body.aircraftID});
         if (!item) {
-            console.log("reservation not found- did not update")
             res.sendStatus(404);
             return;
         }
@@ -77,7 +72,6 @@ app.get('/api/reservations/:userID', async (req, res) => {
         item.userID = req.body.userID;
         item.aircraftID = req.body.aircraftID;
         await item.save();
-        console.log("Edited item successfully, saved to database")
         res.send(item);
     } catch (error) {
         console.log(error);
