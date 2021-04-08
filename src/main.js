@@ -6,17 +6,16 @@ import logbook from "./mock-data-logbook-entries";
 
 Vue.config.productionTip = false;
 
-let data = {
+let entryData = {
   aircraft: mock,
   logbookEntries: logbook,
-  numLogEntries: 6
+  numLogEntries: 6,
+  userID: 1010
 }
 
 new Vue({
   router,
-  data: {
-    userID: 1010,
-  },
+  data: entryData,
   computed: {
     totalHours: function() {
       let result = 0;
@@ -66,7 +65,7 @@ new Vue({
       return 250 - this.totalHours;
     },
     getUserID: function() {
-      return this.userID;
+      return this.$data.userID;
     }
   },
   render: (h) => h(App),

@@ -1,5 +1,6 @@
 <template>
     <div class='wrapper'>
+        <button @click="getReservations()">Test</button>
         <div v-for='plane in aircraftList' :key="plane.id">
             <div class='fleet-plane'>
                 <img :src="'/images/' + plane.id + '.jpg'" class='plane-image'>
@@ -27,26 +28,26 @@ export default{
     },   //props: is like the constructor- defines the variables we expect to come in
     data() {
     return {
-      userID: 2,
       reservations: [],
     }
   },
 
   created() {
-      this.getReservations(this.userID);
+      this.getReservations(this.$root.$data.userID);
+      console.log(this.reservations);
   },
     
     methods: {
         async incrementHoursReserved(plane) {
             console.log("incrementHoursBooked called")
             plane.hoursBooked++;
-
             try {
                 axios.put(`/api/reservations/edit/`, {
-                    userID: this.$root.getUserID(),
+                    userID: this.$root.$data.userID,
                     aircraftID: plane.id,
+                    hoursReserved: plane.hoursBooked
                  });
-            this.getReservations();
+            this.getReservations(this.$root.$data.userID);
             } catch (error) {
                 console.log(error);
             }
@@ -55,27 +56,48 @@ export default{
             console.log("decrementHoursBooked called")
             if(plane.hoursBooked > 0) {
                 plane.hoursBooked--;
+                try {
+                axios.put(`/api/reservations/edit/`, {
+                    userID: this.$root.$data.userID,
+                    aircraftID: plane.id,
+                    hoursReserved: plane.hoursBooked
+                 });
+                this.getReservations();
+                }
+                catch (error) 
+                {
+                    console.log(error);
+                }
             }
         },
-    async getReservations(userID) {
-        let response = 0;
-      try {
-        response = await axios.get("/api/reservations/" + userID);
-        this.reservations = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-      var i;
-      for (i = 0; i < response.length; i++) {
-          var j;
-          for (j = 0; j < this.aircraftList.length; j++) {
-              if(response[i].aircraftID == this.aircraftList[j].id) {
-                  this.aircraftList[j].hoursBooked = response[i].numHours;
-              }
-          }
-
-      }
-    },
+        updateAircraftReservations() {
+            let response = this.reservations;
+            console.log("Entering updateAircraftReservations");
+            let i = 0;
+                for (i = 0; i < response.length; i++) {
+                    let j = 0;
+                    for (j = 0; j < this.aircraftList.length; j++) {
+                        console.log(response[i].aircraftID + ", " + this.aircraftList[j].id)
+                        if(response[i].aircraftID == this.aircraftList[j].id) {
+                            this.aircraftList[j].hoursBooked = response[i].numHours;
+                        }
+                    }
+                }
+            console.log("exiting updateAircraftReservations");
+        },
+        async getReservations() {
+            let response = 0;
+            let userID = this.$root.$data.userID
+            try {
+                response = await axios.get("/api/reservations/" + userID);
+                this.reservations = response.data;
+            } catch (error) {
+                console.log(error);
+            }
+            this.updateAircraftReservations();
+            console.log("exiting getReservations")
+        },
+    
     }
 }
 </script>

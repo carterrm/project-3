@@ -19,8 +19,7 @@ export default {
   },
   computed: {
     userID: function() {
-      console.log(this.$root.$computed.userID());
-      return this.$root.$computed.userID();
+      return this.$root.$data.userID;
     },
   },
   methods: {
@@ -39,15 +38,16 @@ export default {
         console.log(error);
       }
     }
-    console.log("All aircraft reservations completed for " + userID)
+    console.log("All aircraft reservations completed for " + this.$root.$data.userID)
     },
     async login() {
       console.log("login function entered, moving to create reservations");
-      let results = await this.getReservations(this.userID);
+      console.log(this.$root.$data.userID);
+      let results = await this.getReservations(this.$root.$data.userID);
       console.log(results);
       if(results.length === 0) {
         console.log("creating reservations in DB")
-      this.CreateReservationsForClient(this.userID);
+      this.CreateReservationsForClient(this.$root.$data.userID);
       } //if there are no results,
     },
     async getReservations(userID) {
