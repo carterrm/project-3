@@ -38,9 +38,21 @@ export default{
     
     methods: {
         async incrementHoursReserved(plane) {
+            console.log("incrementHoursBooked called")
             plane.hoursBooked++;
+
+            try {
+                axios.put(`/api/reservations/edit/`, {
+                    userID: this.$root.getUserID(),
+                    aircraftID: plane.id,
+                 });
+            this.getReservations();
+            } catch (error) {
+                console.log(error);
+            }
         },
         async decrementHoursReserved(plane) {
+            console.log("decrementHoursBooked called")
             if(plane.hoursBooked > 0) {
                 plane.hoursBooked--;
             }

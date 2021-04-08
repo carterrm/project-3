@@ -14,7 +14,9 @@ let data = {
 
 new Vue({
   router,
-  data,
+  data: {
+    userID: 1010,
+  },
   computed: {
     totalHours: function() {
       let result = 0;
@@ -62,6 +64,9 @@ new Vue({
     },
     hoursToCommercial: function() {
       return 250 - this.totalHours;
+    },
+    getUserID: function() {
+      return this.userID;
     }
   },
   render: (h) => h(App),
