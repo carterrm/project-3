@@ -1,5 +1,7 @@
 <template>
   <div class="wrapper">
+    <button @click="addTestLogEntries">Add Dummy Data</button>
+    <button @click="updateEntries">Update Entries</button>
   <p>Add an entry:</p>
     <form v-on:submit.prevent="logbookSubmit" class="about">
       <label for="planes">Choose the aircraft you flew:</label>
@@ -55,6 +57,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+import logbook from "../mock-data-logbook-entries";
 export default {
   name: "Logbook",
   data: function() {
@@ -103,20 +107,73 @@ export default {
     },
   components: {
   },
+  created() {
+      this.updateEntries();
+  },
   methods: {
-    logbookSubmit() {
-      this.$root.$data.numLogEntries++;
-      console.log(this.hoursFlown + "hours flown");
-      this.entries.unshift({
+
+    async logbookSubmit() {
+      try{
+        this.entries.unshift({
         entryID: (this.$root.$data.numLogEntries + 1),
         aircraftID: this.aircraft,
         numHours: parseInt(this.hoursFlown),
         description: this.descriptionBound
       });
+        let requestBody = {
+            userID: this.$root.$data.userID,
+            numHours: parseInt(this.hoursFlown),
+            aircraftID: this.aircraft,
+            description: this.descriptionBound
+        }
+        await axios.post(("/api/logbook/" + this.$root.$data.userID), requestBody);
+        this.updateEntries();
+      }
+      catch(error){
+        console.log(error);
+      }
     },
-    deleteEntry(entry) {
+
+    async deleteEntry(entry) {
       let index = this.$root.$data.logbookEntries.indexOf(entry);
       this.$root.$data.logbookEntries.splice(index,1);
+      try{
+        let apiString = ("/api/entries/" + this.$root.$data.userID + "/" + entry._id);
+        await axios.delete(apiString);
+      }
+      catch(error){
+        console.log(error);
+      }
+      this.updateEntries();
+    },
+
+    async updateEntries() {
+      try{
+        let entriesFromDB = await axios.get("/api/logbook/" + this.$root.$data.userID);
+        this.$root.$data.logbookEntries = entriesFromDB.data;
+      }
+      catch(error){
+        console.log(error);
+      }
+    },
+
+    async addTestLogEntries() {
+      try{
+        let i = 0;
+        for(i = 0; i < logbook.length; i++) {
+            let requestBody = {
+              userID: this.$root.$data.userID,
+              numHours: parseInt(logbook[i].numHours),
+              aircraftID: logbook[i].aircraftID,
+              description: logbook[i].description
+            }
+            await axios.post("/api/logbook/" + this.$root.$data.userID, requestBody);
+        }
+      }
+      catch(error) {
+        console.log("error");
+      }
+      
     }
   }
 };

@@ -33,19 +33,14 @@ export default {
             hoursBooked: 0,
             aircraftID: planes[i].id
         });
-        console.log("Reservation for " + planes[i].id + " created")
       } catch (error) {
         console.log(error);
       }
     }
     },
     async login() {
-      console.log("login function entered, moving to create reservations");
-      console.log(this.$root.$data.userID);
       let results = await this.getReservations(this.$root.$data.userID);
-      console.log(results);
       if(results.length === 0) {
-        console.log("creating reservations in DB")
       this.CreateReservationsForClient(this.$root.$data.userID);
       } //if there are no results,
     },

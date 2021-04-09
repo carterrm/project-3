@@ -33,12 +33,10 @@ export default{
 
   created() {
       this.getReservations(this.$root.$data.userID);
-      console.log(this.reservations);
   },
     
     methods: {
         async incrementHoursReserved(plane) {
-            console.log("Entering increment");
             plane.hoursBooked++;
             try {
                 await axios.put(`/api/reservations/edit/`, {
@@ -50,10 +48,8 @@ export default{
             } catch (error) {
                 console.log(error);
             }
-            console.log("Leaving increment");
         },
         async decrementHoursReserved(plane) {
-            console.log("Entering decrement");
             if(plane.hoursBooked > 0) {
                 plane.hoursBooked--;
                 try {
@@ -69,10 +65,8 @@ export default{
                     console.log(error);
                 }
             }
-            console.log("Leaving decrement");
         },
         updateReservations() {
-            console.log("Entering updateReservations")
             let response = this.reservations;
             let i = 0;
                 for (i = 0; i < response.length; i++) {
@@ -83,24 +77,19 @@ export default{
                         }
                     }
                 }
-                console.log("Leaving updateReservations");
         },
 
         //TODO Something in this chain of command is being funky & not updating properly- Mongo's right, the client's one added hour behind. Removing hours seems to work, though
         async getReservations() {
-            console.log("Entering getReservations");
             let response = 0;
             let userID = this.$root.$data.userID
             try {
                 response = await axios.get("/api/reservations/" + userID);
                 this.reservations = response.data;
-                console.log("this.reservations updated with data from DB");
-                console.log("this.reservations = ", this.reservations);
             } catch (error) {
                 console.log(error);
             }
             this.updateReservations();
-            console.log("Leaving getReservations")
         },
     
     }

@@ -9,7 +9,6 @@ Vue.config.productionTip = false;
 let entryData = {
   aircraft: mock,
   logbookEntries: logbook,
-  numLogEntries: 6,
   userID: 1010
 }
 
