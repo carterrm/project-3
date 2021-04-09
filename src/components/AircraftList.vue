@@ -38,27 +38,30 @@ export default{
     
     methods: {
         async incrementHoursReserved(plane) {
+            console.log("Entering increment");
             plane.hoursBooked++;
             try {
-                axios.put(`/api/reservations/edit/`, {
+                await axios.put(`/api/reservations/edit/`, {
                     userID: this.$root.$data.userID,
                     aircraftID: plane.id,
                     hoursReserved: plane.hoursBooked
                  });
-            this.getReservations(this.$root.$data.userID);
+            this.getReservations();
             } catch (error) {
                 console.log(error);
             }
+            console.log("Leaving increment");
         },
         async decrementHoursReserved(plane) {
+            console.log("Entering decrement");
             if(plane.hoursBooked > 0) {
                 plane.hoursBooked--;
                 try {
-                axios.put(`/api/reservations/edit/`, {
+                await axios.put(`/api/reservations/edit/`, {
                     userID: this.$root.$data.userID,
                     aircraftID: plane.id,
                     hoursReserved: plane.hoursBooked
-                 });
+                    });
                 this.getReservations();
                 }
                 catch (error) 
@@ -66,8 +69,10 @@ export default{
                     console.log(error);
                 }
             }
+            console.log("Leaving decrement");
         },
-        updateAircraftReservations() {
+        updateReservations() {
+            console.log("Entering updateReservations")
             let response = this.reservations;
             let i = 0;
                 for (i = 0; i < response.length; i++) {
@@ -78,19 +83,24 @@ export default{
                         }
                     }
                 }
+                console.log("Leaving updateReservations");
         },
 
         //TODO Something in this chain of command is being funky & not updating properly- Mongo's right, the client's one added hour behind. Removing hours seems to work, though
         async getReservations() {
+            console.log("Entering getReservations");
             let response = 0;
             let userID = this.$root.$data.userID
             try {
                 response = await axios.get("/api/reservations/" + userID);
                 this.reservations = response.data;
+                console.log("this.reservations updated with data from DB");
+                console.log("this.reservations = ", this.reservations);
             } catch (error) {
                 console.log(error);
             }
-            this.updateAircraftReservations();
+            this.updateReservations();
+            console.log("Leaving getReservations")
         },
     
     }

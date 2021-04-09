@@ -36,14 +36,14 @@ const reservation = mongoose.model('Reservation', reservationSchema);
 app.post('/api/reservations/:userID/', async (req, res) => {
     console.log("entered Server Post for reservations");
     try {
-        let newRes = new reservation({
+        let newEntry = new reservation({
             userID: req.body.userID,
             numHours: req.body.hoursBooked,
             aircraftID: req.body.aircraftID
         });
-        await newRes.save();
+        await newEntry.save();
         console.log("Reservation for" + req.params.aircraftID + "updated- returning item to client");
-        res.send(newRes);
+        res.send(newEntry);
     } catch (error) {
         console.log("Error saving reservation for " + req.params.aircraftID);
         console.log(error);
@@ -91,7 +91,7 @@ const entry = mongoose.model('Entry', LogbookEntrySchema);
 app.get('/api/logbook/:userID', async (req, res) => {
   console.log("Entered Server Get for logbook");
     try {
-      let logbook = await reservation.find({userID: req.params.userID});
+      let logbook = await entry.find({userID: req.params.userID});
       res.send(logbook);
       console.log("Sent logbook to client successfully");
     } catch (error) {
@@ -104,14 +104,15 @@ app.get('/api/logbook/:userID', async (req, res) => {
   app.post('/api/reservations/:userID/', async (req, res) => {
     console.log("entered Server Post for reservations");
     try {
-        let newRes = new reservation({
+        let newEntry = new entry({
             userID: req.body.userID,
             numHours: req.body.hoursBooked,
-            aircraftID: req.body.aircraftID
+            aircraftID: req.body.aircraftID,
+            description: req.body.description
         });
-        await newRes.save();
-        console.log("Reservation for" + req.params.aircraftID + "updated- returning item to client");
-        res.send(newRes);
+        await newEntry.save();
+        console.log("Logbook entry posted- user = " + req.body.userID + ", hours = " + req.body.numHours + ", aircraft = " + req.body.aircraftID);
+        res.send(newEntry);
     } catch (error) {
         console.log("Error saving reservation for " + req.params.aircraftID);
         console.log(error);

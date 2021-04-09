@@ -38,7 +38,6 @@ export default {
         console.log(error);
       }
     }
-    console.log("All aircraft reservations completed for " + this.$root.$data.userID)
     },
     async login() {
       console.log("login function entered, moving to create reservations");
