@@ -13,7 +13,7 @@
     </div>
     <router-view/>
     <div class='footer'>
-    <a href="https://github.com/carterrm/project-3">GitHub repository link</a>
+    <a href="https://github.com/carterrm/project-4">GitHub repository link</a>
   </div>
   </div>
 </template>
