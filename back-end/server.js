@@ -34,7 +34,6 @@ const reservationSchema = new mongoose.Schema({
 const reservation = mongoose.model('Reservation', reservationSchema);
 
 app.post('/api/reservations/:userID/', async (req, res) => {
-    console.log("entered Server Post for reservations");
     try {
         let newEntry = new reservation({
             userID: req.body.userID,
@@ -42,10 +41,8 @@ app.post('/api/reservations/:userID/', async (req, res) => {
             aircraftID: req.body.aircraftID
         });
         await newEntry.save();
-        console.log("Reservation for" + req.params.aircraftID + "updated- returning item to client");
         res.send(newEntry);
     } catch (error) {
-        console.log("Error saving reservation for " + req.params.aircraftID);
         console.log(error);
         res.sendStatus(500);
     }
@@ -83,41 +80,50 @@ const LogbookEntrySchema = new mongoose.Schema({
     userID: Number,
     numHours: Number,
     aircraftID: String,
-    text: String
+    description: String
 });
 
 const entry = mongoose.model('Entry', LogbookEntrySchema);
 
 app.get('/api/logbook/:userID', async (req, res) => {
-  console.log("Entered Server Get for logbook");
     try {
       let logbook = await entry.find({userID: req.params.userID});
       res.send(logbook);
-      console.log("Sent logbook to client successfully");
     } catch (error) {
-        console.log("Error in getting logbook for client")
       console.log(error);
       res.sendStatus(500);
     }
   });
 
-  app.post('/api/reservations/:userID/', async (req, res) => {
-    console.log("entered Server Post for reservations");
+  app.post('/api/logbook/:userID/', async (req, res) => {
     try {
         let newEntry = new entry({
             userID: req.body.userID,
-            numHours: req.body.hoursBooked,
+            numHours: req.body.numHours,
             aircraftID: req.body.aircraftID,
             description: req.body.description
         });
         await newEntry.save();
-        console.log("Logbook entry posted- user = " + req.body.userID + ", hours = " + req.body.numHours + ", aircraft = " + req.body.aircraftID);
         res.send(newEntry);
     } catch (error) {
-        console.log("Error saving reservation for " + req.params.aircraftID);
         console.log(error);
         res.sendStatus(500);
     }
+});
+
+app.delete('/api/entries/:userID/:_id', async (req, res) => {
+  try {
+      let item = await entry.findOne({_id:req.params.itemID, _id: req.params._id});
+      if (!item) {
+          res.send(404);
+          return;
+      }
+      await item.delete();
+      res.sendStatus(200);
+  } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+  }
 });
 
 app.listen(3000, () => console.log('Server listening on port 3000!'));
