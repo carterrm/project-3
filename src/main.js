@@ -8,8 +8,9 @@ Vue.config.productionTip = false;
 
 let entryData = {
   aircraft: mock,
+  name:"",
   logbookEntries: logbook,
-  userID: 1010
+  userID: '-1'
 }
 
 new Vue({

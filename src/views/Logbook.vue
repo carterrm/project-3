@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" v-if="isLoggedIn()">
     <button @click="addTestLogEntries">Add Dummy Data</button>
     <button @click="updateEntries">Update Entries</button>
   <p>Add an entry:</p>
@@ -54,6 +54,9 @@
     <hr class="break">
     </div>
   </div>
+  <div v-else>
+            <p>You aren't logged in. Please log in to make reservations!</p>
+    </div>
 </template>
 
 <script>
@@ -111,7 +114,16 @@ export default {
       this.updateEntries();
   },
   methods: {
-
+    isLoggedIn() {
+            if(this.$root.$data.userID == '-1') {
+                console.log("User is not logged in");
+                return false;
+            }
+            else {
+                console.log("User is logged in");
+                return true;
+            }
+        },
     async logbookSubmit() {
       try{
         this.entries.unshift({
@@ -148,12 +160,17 @@ export default {
     },
 
     async updateEntries() {
-      try{
-        let entriesFromDB = await axios.get("/api/logbook/" + this.$root.$data.userID);
-        this.$root.$data.logbookEntries = entriesFromDB.data;
+      if(this.$root.$data.userID != undefined) {
+        try{
+          let entriesFromDB = await axios.get("/api/logbook/" + this.$root.$data.userID);
+          this.$root.$data.logbookEntries = entriesFromDB.data;
+        }
+        catch(error){
+          console.log(error);
+        }
       }
-      catch(error){
-        console.log(error);
+      else{
+        console.log("User ID not defined- please log in");
       }
     },
 

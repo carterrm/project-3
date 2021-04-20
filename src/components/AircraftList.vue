@@ -1,6 +1,6 @@
 <template>
-    <div class='wrapper'>
-        <div v-for='plane in aircraftList' :key="plane.id">
+    <div class='wrapper' v-if="isLoggedIn()">
+        <div  v-for='plane in aircraftList' :key="plane.id">
             <div class='fleet-plane'>
                 <img :src="'/images/' + plane.id + '.jpg'" class='plane-image'>
                  <div class='plane-text'>
@@ -15,6 +15,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div v-else>
+            <p>You aren't logged in. Please log in to make reservations!</p>
     </div>
 </template>
 
@@ -36,35 +39,57 @@ export default{
   },
     
     methods: {
-        async incrementHoursReserved(plane) {
-            plane.hoursBooked++;
-            try {
-                await axios.put(`/api/reservations/edit/`, {
-                    userID: this.$root.$data.userID,
-                    aircraftID: plane.id,
-                    hoursReserved: plane.hoursBooked
-                 });
-            this.getReservations();
-            } catch (error) {
-                console.log(error);
+        isLoggedIn() {
+            if(this.$root.$data.userID == '-1') {
+                console.log("User is not logged in");
+                return false;
+            }
+            else {
+                console.log("User is logged in");
+                return true;
             }
         },
-        async decrementHoursReserved(plane) {
-            if(plane.hoursBooked > 0) {
-                plane.hoursBooked--;
+        async incrementHoursReserved(plane) {
+            if(this.$root.$data.userID != undefined) {
+                plane.hoursBooked++;
                 try {
-                await axios.put(`/api/reservations/edit/`, {
-                    userID: this.$root.$data.userID,
-                    aircraftID: plane.id,
-                    hoursReserved: plane.hoursBooked
+                    await axios.put(`/api/reservations/edit/`, {
+                        userID: this.$root.$data.userID,
+                        aircraftID: plane.id,
+                        hoursReserved: plane.hoursBooked
                     });
                 this.getReservations();
-                }
-                catch (error) 
-                {
+                } catch (error) {
                     console.log(error);
                 }
             }
+            else{
+                console.log("User ID not defined- please log in");
+            }
+            
+        },
+        async decrementHoursReserved(plane) {
+            if(this.$root.$data.userID != undefined) {
+                if(plane.hoursBooked > 0) {
+                    plane.hoursBooked--;
+                    try {
+                        await axios.put(`/api/reservations/edit/`, {
+                        userID: this.$root.$data.userID,
+                        aircraftID: plane.id,
+                        hoursReserved: plane.hoursBooked
+                        });
+                    this.getReservations();
+                    }
+                    catch (error) 
+                    {
+                        console.log(error);
+                    }
+                }
+            }
+            else{
+                console.log("User ID not defined- please log in");
+            }
+            
         },
         updateReservations() {
             let response = this.reservations;
