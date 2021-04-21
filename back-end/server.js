@@ -200,7 +200,7 @@ app.post('/api/login', async (req, res) => {
   }
 })
 
-app.post('/', async (req, res) => {
+app.post('/api', async (req, res) => {
   console.log("Entering User registration");
   // Make sure that the form coming from the browser includes all required fields,
   // otherwise return an error. A 400 error means the request was

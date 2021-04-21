@@ -100,7 +100,7 @@ export default {
           password: this.password,
         };
         console.log(requestData);
-        let response = await axios.post('/', requestData);
+        let response = await axios.post('/api', requestData);
         console.log("Response = " + response);
         this.$root.$data.userID = response.data.user._id;
         this.CreateReservationsForClient(this.$root.$data.userID);
